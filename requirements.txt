@@ -1,0 +1,10 @@
+tweepy
+kafka-python
+streamlit
+boto3
+wordcloud
+matplotlib
+transformers
+pyspark
+fastapi
+uvicorn
