@@ -8,8 +8,16 @@ bearer_token = 'AAAAAAAAAAAAAAAAAAAAANro3AEAAAAATole9QajL%2Fxh9ALjaQ%2F%2BDnRJIz
 
 class StreamListener(tweepy.StreamingClient):
     def on_tweet(self, tweet):
-        print("Tweet received:", tweet.data)
-        producer.send("twitter-stream", tweet.data)
+        # Convert tweet data to standardized format for Spark processing
+        tweet_data = {
+            "text": tweet.text,
+            "created_at": tweet.created_at.isoformat() if tweet.created_at else "",
+            "id": str(tweet.id),
+            "lang": getattr(tweet, 'lang', 'en')
+        }
+        
+        print("Tweet received:", tweet_data['text'][:100])
+        producer.send("twitter-stream", tweet_data)
 
 stream = StreamListener(bearer_token)
 stream.add_rules(tweepy.StreamRule("elections OR india OR movies"))
